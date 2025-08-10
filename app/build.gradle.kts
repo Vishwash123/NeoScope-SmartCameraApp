@@ -98,7 +98,23 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
 
+    implementation("com.google.mlkit:text-recognition:16.0.0")
 
+    // Barcode Scanning (QR Codes)
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
 
+    // Object Detection
+    implementation("com.google.mlkit:object-detection:17.0.0")
+
+    // Translation
+    implementation("com.google.mlkit:translate:17.0.1")
+    implementation("com.airbnb.android:lottie-compose:6.1.0")
+    implementation("org.tensorflow:tensorflow-lite:2.13.0")
+    implementation("org.tensorflow:tensorflow-lite-task-vision:0.4.3")
 
 }
+
+
+
+
+

@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.example.cameraapp.Models.Message
 
 @Composable
-fun ChatsLazyColumn(modifier: Modifier=Modifier,messages:List<Message>,lazyState:LazyListState,onRegenerate:(String,String)->Unit){
+fun ChatsLazyColumn(modifier: Modifier=Modifier,messages:List<Message>,lazyState:LazyListState,onRegenerate:(String,String)->Unit,onImageClicked:(String?)->Unit){
     LazyColumn(state = lazyState,modifier = Modifier.fillMaxSize().background(Color.Transparent),
         contentPadding = PaddingValues(bottom = 170.dp)
     ) {
@@ -26,7 +26,7 @@ fun ChatsLazyColumn(modifier: Modifier=Modifier,messages:List<Message>,lazyState
                 UserMessageItem(userMessage = message)
             }
             else{
-                AiMessageItem(aiMessage = message,onRegenerate = onRegenerate)
+                AiMessageItem(aiMessage = message,onRegenerate = onRegenerate, onImageClicked = onImageClicked)
             }
 
         }

@@ -28,7 +28,8 @@ import javax.inject.Singleton
 //            .create(ChatApi::class.java)
 //    }
 //}
-const val BASE_URL = "https://b019e1bdecb1.ngrok-free.app"
+const val BASE_URL = "REDACTED"
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -37,9 +38,9 @@ object NetworkModule{
 
     @Provides
     @Singleton
-    fun provideOkHttpClient():OkHttpClient = OkHttpClient.Builder().connectTimeout(6000, TimeUnit.SECONDS)   // Connection timeout
-        .readTimeout(3000, TimeUnit.SECONDS)      // Read timeout (waiting for server to respond)
-        .writeTimeout(3000, TimeUnit.SECONDS)     // Write timeout (if uploading data)
+    fun provideOkHttpClient():OkHttpClient = OkHttpClient.Builder().connectTimeout(300, TimeUnit.SECONDS)   // Connection timeout
+        .readTimeout(300, TimeUnit.SECONDS)      // Read timeout (waiting for server to respond)
+        .writeTimeout(300, TimeUnit.SECONDS)     // Write timeout (if uploading data)
         .build()
 
     @Provides
@@ -56,4 +57,8 @@ object NetworkModule{
     @Singleton
     fun provideChatApi(retrofit: Retrofit):ChatApi =
         retrofit.create(ChatApi::class.java)
+
+
+
+
 }

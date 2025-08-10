@@ -1,14 +1,19 @@
 package com.example.cameraapp
 
 import android.app.VoiceInteractor.Prompt
+import androidx.compose.ui.res.integerResource
 import com.example.cameraapp.ChatbotBackend.ChatApi
 import com.example.cameraapp.Models.ChatRequest
 import com.example.cameraapp.Models.ClassifyRequest
 import com.example.cameraapp.Models.ImageGenerationRequest
+import kotlinx.coroutines.CancellationException
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.Response
+import okhttp3.ResponseBody
+import retrofit2.http.Url
 import java.io.File
 import javax.inject.Inject
 
@@ -18,7 +23,11 @@ class ChatbotRepository @Inject constructor(private val chatApi: ChatApi) {
         return try {
             val response = chatApi.classify(ClassifyRequest(prompt))
             response.category ?: "No response"
-        }catch (e:Exception){
+        }
+        catch(e:CancellationException) {
+            "Stopped"
+        }
+        catch (e:Exception){
             "Failed"
         }
     }
@@ -27,6 +36,8 @@ class ChatbotRepository @Inject constructor(private val chatApi: ChatApi) {
         return try {
             val response = chatApi.chat(ChatRequest(prompt))
             response.response ?: "No response"
+        }catch(e:CancellationException) {
+            "Stopped"
         }catch (e:Exception){
             "Failed"
         }
@@ -36,6 +47,8 @@ class ChatbotRepository @Inject constructor(private val chatApi: ChatApi) {
         return try {
             val response = chatApi.generateImage(ImageGenerationRequest(prompt))
             response.image_url ?: "No response"
+        }catch(e:CancellationException) {
+            "Stopped"
         }catch (e:Exception){
             "Failed"
         }
@@ -50,6 +63,8 @@ class ChatbotRepository @Inject constructor(private val chatApi: ChatApi) {
 
             val response = chatApi.editImage(imagePart, promptBody)
             response.image_url ?: "No response"
+        }catch(e:CancellationException) {
+            "Stopped"
         }catch (e:Exception){
             "Failed"
         }
@@ -62,9 +77,21 @@ class ChatbotRepository @Inject constructor(private val chatApi: ChatApi) {
 
             val response = chatApi.removeBackground(imagePart)
             return response.image_url ?: "No response"
+        }catch(e:CancellationException) {
+            "Stopped"
         }catch (e:Exception){
             "Failed"
         }
+    }
+
+    suspend fun downloadFile(url: String):Response<ResponseBody>?{
+         try{
+             val response = chatApi.downloadImage(url)
+             return response
+         }
+         catch (e:Exception){
+             return null
+         }
     }
 
 }

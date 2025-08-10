@@ -43,6 +43,7 @@ import com.example.cameraapp.Components.ChatBoxTextField
 import com.example.cameraapp.Components.ChatsLazyColumn
 import com.example.cameraapp.Components.SpeechToTextWindow
 import com.example.cameraapp.Components.StopButton
+import com.example.cameraapp.Navigation.ScreenSealed
 import com.example.cameraapp.R
 import com.example.cameraapp.ViewModels.ChatbotViewModel
 import com.example.cameraapp.ui.theme.Montserrat
@@ -163,12 +164,17 @@ fun ChatbotScreen(
 
                 Box(modifier.fillMaxSize()) {
 
-                    ChatsLazyColumn(messages = messages, lazyState = listState) { id, prompt ->
-                        chatbotViewModel.regenerate(id, prompt,context)
-                    }
+                    ChatsLazyColumn(messages = messages, lazyState = listState,
+                        onRegenerate = { id, prompt ->
+                            chatbotViewModel.regenerate(id, prompt,context)
+                        },
+                        onImageClicked = {url->
+                            navHostController.navigate(ScreenSealed.ResponseScreen.passAll(url = url))
+                        }
+                    )
                     ChatBoxTextField(
                         modifier.align(Alignment.BottomCenter)
-                            .padding(bottom = 16.dp),
+                            .padding(bottom = 16.dp).clickable(enabled = !chatbotViewModel.isGenerating){},
                         onSendClicked = { text ->
                             val imageUri = chatbotViewModel.getImage()
                             coroutineScope.launch {

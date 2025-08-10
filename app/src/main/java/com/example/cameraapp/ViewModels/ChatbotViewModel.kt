@@ -10,12 +10,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cameraapp.ChatbotBackend.BASE_URL
 import com.example.cameraapp.ChatbotBackend.ChatApi
 import com.example.cameraapp.ChatbotBackend.NetworkModule
 import com.example.cameraapp.ChatbotRepository
+import com.example.cameraapp.ImageHelper
 import com.example.cameraapp.Models.ChatRequest
 import com.example.cameraapp.Models.Message
 import com.example.cameraapp.Models.PromptCategories
@@ -25,8 +27,10 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import retrofit2.Retrofit
 import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 
 
@@ -61,6 +65,7 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
 //    var currentlyProcessedMessageId:String? = null
 
     private var chatJob: Job? = null
+    private var classifyJob:Job? = null
 
 
 
@@ -97,35 +102,40 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
         _messages[lastIndex].responseImageUrl = null
         _messages[lastIndex].showShimmer.value = false
         _messages[lastIndex].isError.value = true
-        _messages[lastIndex].displayedText.value = "Failed to fetch. Server not found."
+        _messages[lastIndex].displayedText.value = if(action =="Failed") "Failed to fetch. Server not found." else "Message Generation was Stopped"
     }
 
     suspend fun classify(context: Context,prompt: String,imageUri: Uri?){
-        Toast.makeText(context,"classify triggered",Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context,"classify triggered",Toast.LENGTH_SHORT).show()
         isGenerating = true
+        val userMessage = Message(fulltext = prompt, timestamp = System.currentTimeMillis(), fromUser = true, image = imageUri)
+        userMessage.displayedText.value = prompt
+        addMessage(userMessage)
+        val userIndex = _messages.lastIndex
         if(prompt.isEmpty()){
             sendNoInstructionResponse()
             isGenerating=false
             return
         }
-        val userMessage = Message(fulltext = prompt, timestamp = System.currentTimeMillis(), fromUser = true, image = imageUri)
-        userMessage.displayedText.value = prompt
-        addMessage(userMessage)
-        val userIndex = _messages.lastIndex
+
         val responseMessage = Message(timestamp = System.currentTimeMillis(), fromUser = false, prompt = prompt)
         addMessage(responseMessage)
-        val category = chatbotRepository.classifyPrompt(prompt)
-        val action = PromptCategories.promptMap[category]
-//        Toast.makeText(context,"$action",Toast.LENGTH_SHORT).show()
-        if(action ==null || action=="Failed"){
-            sendFailedRepsonse(action?:"Failed")
-            isGenerating = false
-            return
-        }
+        classifyJob = viewModelScope.launch {
+            val category = chatbotRepository.classifyPrompt(prompt)
+            Toast.makeText(context, "$category", Toast.LENGTH_SHORT).show()
+            val action = PromptCategories.promptMap[category]
+            Toast.makeText(context, "$category", Toast.LENGTH_SHORT).show()
+            if (action == null || action == "Failed" || action=="Stopped") {
+                sendFailedRepsonse(action ?: "Failed")
+                responseMessage.showShimmer.value = false
+                isGenerating = false
+                return@launch
+            }
 //        _messages[userIndex].promptType = action
-        _messages[_messages.lastIndex].promptType = action
+            _messages[_messages.lastIndex].promptType = action
 
-        sendMessage(prompt,imageUri,action!!,context)
+            sendMessage(prompt, imageUri, action!!, context)
+        }
     }
 
 
@@ -229,6 +239,8 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
             }
             finally {
                 isGenerating=false
+                chatJob = null
+                classifyJob = null
 //                currentlyProcessedMessageId = null
             }
         }
@@ -321,6 +333,8 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
             }
             finally {
                 isGenerating = false
+                chatJob = null
+
             }
         }
 
@@ -332,7 +346,35 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
     }
 
     fun stopMessage(){
+         classifyJob?.cancel()
+//        isGenerating = false
          chatJob?.cancel()
+    }
+
+    fun dowloadImage(context: Context,url:String){
+        viewModelScope.launch {
+            val response = chatbotRepository.downloadFile(url)
+            if(response==null){
+                Toast.makeText(context,"Download failed",Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+            else{
+                val fileName = "neoscope_${System.currentTimeMillis()}.jpg"
+                val file = File(context.cacheDir, fileName)
+
+// Step 1: Write downloaded bytes to file
+                response.body()?.byteStream()?.use { input ->
+                    FileOutputStream(file).use { output ->
+                        input.copyTo(output)
+                    }
+                }
+
+// Step 2: Convert File to Uri
+                val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+                ImageHelper.saveToGallery(context,uri)
+//                val saved = ImageHelper.saveToGallery(context,)
+            }
+        }
     }
 
 

@@ -191,7 +191,7 @@ import com.example.cameraapp.ui.theme.Montserrat
 @RequiresApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PerfectlyCenteredCarousel(items: List<String>) {
+fun PerfectlyCenteredCarousel(items: List<String>,onModeSelected:(String)->Unit) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val itemWidth = screenWidth / 3
 
@@ -199,6 +199,10 @@ fun PerfectlyCenteredCarousel(items: List<String>) {
         initialPage = 1,
         pageCount = { items.size }
     )
+
+    LaunchedEffect(pagerState.currentPage) {
+        onModeSelected(items[pagerState.currentPage])
+    }
 
     HorizontalPager(
         state = pagerState,

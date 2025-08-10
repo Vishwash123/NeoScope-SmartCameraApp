@@ -1,6 +1,11 @@
 package com.example.cameraapp.Components
 
+import android.content.Context
+import android.net.Uri
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -21,7 +26,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun AnimatedImageButton(modifier: Modifier,cameraViewModel: CameraViewModel= hiltViewModel()){
+fun AnimatedImageButton(context: Context,modifier: Modifier,cameraViewModel: CameraViewModel= hiltViewModel(),onImageCaptured:()->Unit){
 
 
 
@@ -29,9 +34,10 @@ fun AnimatedImageButton(modifier: Modifier,cameraViewModel: CameraViewModel= hil
 
     val scope = rememberCoroutineScope()
 
+//        Spacer(modifier= Modifier.height(20.dp))
     IconButton(
-        modifier = modifier,
-        onClick = {
+            modifier = modifier,
+            onClick = {
 //
 //            if(!isAnimating){
 //                isAnimating = true
@@ -43,9 +49,15 @@ fun AnimatedImageButton(modifier: Modifier,cameraViewModel: CameraViewModel= hil
 //                }
 //                isAnimating = false
 //            }
-            cameraViewModel.animateShutter(scope)
+
+                cameraViewModel.animateShutter(scope)
+                cameraViewModel.captureImage(context){uri->
+                    onImageCaptured()
+                }
+            }
+        ) {
+            Image(modifier = Modifier.width(128.dp).height(128.dp), painter = painterResource(id = cameraViewModel.frames[cameraViewModel.currentFrame]), contentDescription = null)
         }
-    ) {
-        Image(modifier = Modifier.width(128.dp).height(128.dp), painter = painterResource(id = cameraViewModel.frames[cameraViewModel.currentFrame]), contentDescription = null)
-    }
+
+
 }

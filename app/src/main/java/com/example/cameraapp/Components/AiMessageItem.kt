@@ -42,12 +42,12 @@ import com.example.cameraapp.ui.theme.Montserrat
 import com.valentinilk.shimmer.shimmer
 
 @Composable
-fun AiMessageItem(modifier: Modifier=Modifier,aiMessage: Message,onRegenerate:(String,String)->Unit){
+fun AiMessageItem(modifier: Modifier=Modifier,aiMessage: Message,onRegenerate:(String,String)->Unit,onImageClicked:(String?)->Unit){
     if(aiMessage.showShimmer.value){
         AiShimmerPlaceholder()
     }
     else{
-        ActualAiMessageItem(modifier,aiMessage,onRegenerate)
+        ActualAiMessageItem(modifier,aiMessage,onRegenerate,onImageClicked)
     }
 }
 
@@ -91,7 +91,7 @@ fun AiShimmerPlaceholder(){
 }
 
 @Composable
-fun ActualAiMessageItem(modifier: Modifier=Modifier,aiMessage: Message,onRegenerate: (String, String) -> Unit){
+fun ActualAiMessageItem(modifier: Modifier=Modifier,aiMessage: Message,onRegenerate: (String, String) -> Unit,onImageClicked: (String?) -> Unit){
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
     val copyToastMessage = "Text Copied"
@@ -124,6 +124,7 @@ fun ActualAiMessageItem(modifier: Modifier=Modifier,aiMessage: Message,onRegener
                 Image(
                     modifier = Modifier.size(200.dp).clickable {
                         //open imahe viewer and downlader
+                        onImageClicked(aiMessage.responseImageUrl)
                     }.clip(RoundedCornerShape(16.dp)).border(width = 0.5.dp,Color.White, shape = RoundedCornerShape(16.dp)),
                     contentScale = ContentScale.Crop,
                     painter = rememberAsyncImagePainter(aiMessage.responseImageUrl),
