@@ -2,6 +2,7 @@ package com.example.cameraapp.Screens
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
@@ -40,7 +41,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
@@ -50,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -70,8 +72,7 @@ fun TextRecognitionScreen(
     cameraViewModel: CameraViewModel= hiltViewModel(),
     navHostController: NavHostController
 ) {
-    //copy speak share
-//    Toast.makeText(context,"${cameraViewModel.capturedImageUri}",Toast.LENGTH_LONG).show()
+
     BackHandler(enabled = true) {
         cameraViewModel.shouldCleanUp.value = true
         TTSManager.stop()
@@ -101,17 +102,45 @@ fun TextRecognitionScreen(
 
     var isSheetOpen by remember { mutableStateOf(true) }
     val file = imageUri?.path?.let { File(it) }
-    Box(modifier = modifier.fillMaxSize()){
+    Box(modifier = modifier.fillMaxSize().background(Color.Black)){
         if(file!=null && file.exists()) {
+            val options = remember(file) {
+                BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                    .also { BitmapFactory.decodeFile(file.absolutePath, it) }
+            }
+
+            val contentScale = remember(options.outWidth to options.outHeight) {
+                if (options.outWidth > options.outHeight) {
+                    ContentScale.Fit
+                } else {
+                    ContentScale.Crop
+                }
+            }
+
             Image(
-                painter = rememberAsyncImagePainter(model = file),
+                painter = BitmapPainter(BitmapFactory.decodeFile(file.path).asImageBitmap()),
                 contentDescription = null,
                 modifier = modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+                contentScale = contentScale
             )
         }
         else{
-            Toast.makeText(context,"File doesn't exist",Toast.LENGTH_SHORT).show()
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 60.dp, start = 20.dp, end = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Image(
+                modifier = Modifier.height(40.dp).width(40.dp)
+                    .clickable {
+                        cameraViewModel.discardImage(imageUri!!)
+                        navHostController.popBackStack()
+                    },
+                painter = painterResource(R.drawable.back),
+                contentDescription = null
+            )
         }
 
         if(isSheetOpen) {
@@ -262,15 +291,7 @@ fun AnimatedDisplayButton(
         LottieAnimation(
             modifier = Modifier.size(200.dp).graphicsLayer { rotationZ = 180f },
             composition = composition,
-            progress = {progress},
-//            modifier = Modifier.size(100.dp)
+            progress = {progress}
         )
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun ButtonPreview(){
-//    TextRecognitionScreen(cameraViewModel = hiltViewModel())
-//
-//}

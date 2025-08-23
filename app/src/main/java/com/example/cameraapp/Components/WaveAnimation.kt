@@ -1,6 +1,6 @@
 package com.example.cameraapp.Components
 
-import android.widget.Toast
+
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.cameraapp.ChatbotBackend.SpeechManagerState
 import kotlin.math.sin
@@ -29,7 +28,6 @@ import kotlin.math.sin
 @Composable
 fun MicWaveWithRms(modifier: Modifier = Modifier,rmsDb: Float) {
     val rmsDb by SpeechManagerState.rmsDb.collectAsState()
-    Toast.makeText(LocalContext.current,"mic rms: $rmsDb",Toast.LENGTH_SHORT).show()
 
     val clampedRms = rmsDb.coerceIn(0f, 12f)
 

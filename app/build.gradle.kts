@@ -107,10 +107,14 @@ dependencies {
     implementation("com.google.mlkit:object-detection:17.0.0")
 
     // Translation
+    implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("com.google.mlkit:translate:17.0.1")
     implementation("com.airbnb.android:lottie-compose:6.1.0")
     implementation("org.tensorflow:tensorflow-lite:2.13.0")
     implementation("org.tensorflow:tensorflow-lite-task-vision:0.4.3")
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.36.0")
+    implementation("com.google.android.gms:play-services-auth:21.4.0")
+
 
 }
 

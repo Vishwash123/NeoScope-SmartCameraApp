@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Camera app</string>
+    <string name="default_web_client_id">225556934887-bajl8nvkr52cfrkdtd0u0r44fi8ls5q7.apps.googleusercontent.com</string>
+
 </resources>

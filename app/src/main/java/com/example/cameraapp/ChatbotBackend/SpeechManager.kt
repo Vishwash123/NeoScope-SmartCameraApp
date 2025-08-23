@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
-import android.widget.Toast
 import java.util.Locale
 
 class SpeechRecognizerManager(
@@ -20,20 +19,15 @@ class SpeechRecognizerManager(
     private var recognizerIntent: Intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
         putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-        putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)  // Enable partial results
+        putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
     }
 
 
     fun startListening() {
         if(!SpeechManagerState.isPaused.value) {
-            Toast.makeText(context,"Listening Started",Toast.LENGTH_SHORT).show()
             SpeechManagerState.currentText.value = ""
         }
         if (speechRecognizer == null) {
-            Toast.makeText(context,"Listening Started",Toast.LENGTH_SHORT).show()
-
-//            Toast.makeText(waveDb.context,"Instantiated", Toast.LENGTH_SHORT).show()
-
             speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context).apply {
                 setRecognitionListener(object : RecognitionListener {
                     override fun onResults(results: Bundle?) {
@@ -53,7 +47,6 @@ class SpeechRecognizerManager(
                     override fun onReadyForSpeech(params: Bundle?) {}
                     override fun onBeginningOfSpeech() {}
                     override fun onRmsChanged(rmsdB: Float) {
-                        Toast.makeText(context,"rms:$rmsdB",Toast.LENGTH_SHORT).show()
                         SpeechManagerState.rmsDb.value = rmsdB
                     }
                     override fun onBufferReceived(buffer: ByteArray?) {}
@@ -66,8 +59,6 @@ class SpeechRecognizerManager(
     }
 
     fun stopListening() {
-        Toast.makeText(context,"Listening Stopped",Toast.LENGTH_SHORT).show()
-
         speechRecognizer?.stopListening()
     }
 

@@ -10,24 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-//object ChatbotRetrofitInstance {
-//    private val BASE_URL = "https://f838c2b6b739.ngrok-free.app"
-//    val okHttpClient = OkHttpClient.Builder()
-//        .connectTimeout(30, TimeUnit.SECONDS)   // Connection timeout
-//        .readTimeout(60, TimeUnit.SECONDS)      // Read timeout (waiting for server to respond)
-//        .writeTimeout(60, TimeUnit.SECONDS)     // Write timeout (if uploading data)
-//        .build()
-//
-//
-//    val api : ChatApi by lazy{
-//        retrofit2.Retrofit.Builder()
-//            .baseUrl(BASE_URL)
-//            .client(okHttpClient)
-//            .addConverterFactory(retrofit2.converter.gson.GsonConverterFactory.create())
-//            .build()
-//            .create(ChatApi::class.java)
-//    }
-//}
+
 const val BASE_URL = "REDACTED"
 
 
@@ -38,9 +21,9 @@ object NetworkModule{
 
     @Provides
     @Singleton
-    fun provideOkHttpClient():OkHttpClient = OkHttpClient.Builder().connectTimeout(300, TimeUnit.SECONDS)   // Connection timeout
-        .readTimeout(300, TimeUnit.SECONDS)      // Read timeout (waiting for server to respond)
-        .writeTimeout(300, TimeUnit.SECONDS)     // Write timeout (if uploading data)
+    fun provideOkHttpClient():OkHttpClient = OkHttpClient.Builder().connectTimeout(300, TimeUnit.SECONDS)
+        .readTimeout(300, TimeUnit.SECONDS)
+        .writeTimeout(300, TimeUnit.SECONDS)
         .build()
 
     @Provides

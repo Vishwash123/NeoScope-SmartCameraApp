@@ -1,7 +1,6 @@
 package com.example.cameraapp.Components
 
-import android.annotation.SuppressLint
-import android.speech.tts.TextToSpeech
+
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,20 +9,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.traceEventEnd
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,15 +31,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.cameraapp.Models.Message
 import com.example.cameraapp.R
 import com.example.cameraapp.ui.theme.Montserrat
-import com.google.firebase.Timestamp
-
 
 @Composable
 fun UserMessageItem(modifier: Modifier=Modifier,userMessage: Message){
@@ -52,7 +44,6 @@ fun UserMessageItem(modifier: Modifier=Modifier,userMessage: Message){
     val context = LocalContext.current
     val copyToastMessage = "Text Copied"
 
-//    val tts = RememberTextToSpeech()
     val gradient = Brush.horizontalGradient(
         colorStops = arrayOf(
             0f to Color(0xFF1C7DC6),
@@ -60,7 +51,7 @@ fun UserMessageItem(modifier: Modifier=Modifier,userMessage: Message){
         )
     )
 
-    //1C7DC6
+
     Row(
         modifier = modifier.background(Color.Transparent).fillMaxWidth(),
         horizontalArrangement = Arrangement.End
@@ -94,9 +85,7 @@ fun UserMessageItem(modifier: Modifier=Modifier,userMessage: Message){
                     if(userMessage.image!=null){
                         Spacer(modifier=Modifier.height(4.dp))
                         Image(
-                            modifier = Modifier.size(200.dp).clickable {
-                                //open imahe viewer and downlader
-                            }.clip(RoundedCornerShape(16.dp)).border(width = 0.5.dp,Color.White,shape = RoundedCornerShape(16.dp)),
+                            modifier = Modifier.size(200.dp).clip(RoundedCornerShape(16.dp)).border(width = 0.5.dp,Color.White,shape = RoundedCornerShape(16.dp)),
                             contentScale = ContentScale.Crop,
                             painter = rememberAsyncImagePainter(userMessage.image),
                             contentDescription = null
@@ -138,19 +127,7 @@ fun UserMessageItem(modifier: Modifier=Modifier,userMessage: Message){
         }
     }
 }
-//@Preview
-//@Composable
-//fun UserMessagePreview(){
-//    UserMessageItem(modifier = Modifier,Message("Parallax is a visual effect in motion graphics that simulates depth \n" +
-//            "by making objects at different distances move at different speeds relative to the viewer's perspective. This technique can make flat images appear three-dimensional by creating a sense of space \n" +
-//            "and motion within a scene.\n" +
-//            "\n" +
-//            "In an animated short film, a scene where a character is walking through a forest can employ the parallax effect to enhance depth perception. The trees and foliage in the foreground move faster across the frame than the mountains and clouds in the background, giving the illusion that the character is moving through a deep, immersive environment. This not only enriches the visual experience but also adds to the storytelling by emphasizing the journey through different layers of the scene.\n" +
-//            "\n" +
-//            "Technical definition\n" +
-//            "Creating a parallax effect involves layering different elements of a scene at varying distances from the viewpoint and animating them at different speeds. The closer an object is to the viewpoint, the faster it moves. This can be achieved in motion graphics.j", timestamp = System.currentTimeMillis(), fromUser = true)
-//    )
-//}
+
 
 
 

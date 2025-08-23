@@ -32,6 +32,7 @@ object PromptCategories{
     val promptMap = mapOf(
         "image generation request" to "image_generation",
         "background removal request" to "background_removal",
+        "remove background from image" to "background_removal",
         "background transparent request" to "background_removal",
         "image editing request" to "image_editing",
         "question" to "text",

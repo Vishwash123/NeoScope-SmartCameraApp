@@ -1,7 +1,6 @@
 package com.example.cameraapp
 
-import android.app.VoiceInteractor.Prompt
-import androidx.compose.ui.res.integerResource
+
 import com.example.cameraapp.ChatbotBackend.ChatApi
 import com.example.cameraapp.Models.ChatRequest
 import com.example.cameraapp.Models.ClassifyRequest
@@ -13,7 +12,6 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import okhttp3.ResponseBody
-import retrofit2.http.Url
 import java.io.File
 import javax.inject.Inject
 

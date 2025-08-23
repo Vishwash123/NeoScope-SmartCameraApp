@@ -2,33 +2,24 @@ package com.example.cameraapp.ViewModels
 
 import android.content.Context
 import android.net.Uri
-import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cameraapp.ChatbotBackend.BASE_URL
-import com.example.cameraapp.ChatbotBackend.ChatApi
-import com.example.cameraapp.ChatbotBackend.NetworkModule
 import com.example.cameraapp.ChatbotRepository
 import com.example.cameraapp.ImageHelper
-import com.example.cameraapp.Models.ChatRequest
 import com.example.cameraapp.Models.Message
 import com.example.cameraapp.Models.PromptCategories
-import com.google.firebase.Timestamp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import retrofit2.Response
-import retrofit2.Retrofit
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
@@ -36,7 +27,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatbotViewModel @Inject constructor(private val chatbotRepository: ChatbotRepository) :ViewModel() {
-//    private val _messages = mutableStateOf<List<Message>>(emptyList())
     private val _messages = mutableStateListOf<Message>()
     val messages:List<Message> get() = _messages
     var isGenerating by mutableStateOf(false)
@@ -62,7 +52,6 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
     fun clearImage(){
         _selectedImageUri.value = null
     }
-//    var currentlyProcessedMessageId:String? = null
 
     private var chatJob: Job? = null
     private var classifyJob:Job? = null
@@ -95,8 +84,6 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
     }
 
     fun sendFailedRepsonse(action: String){
-//        val responseMessage = Message(timestamp = System.currentTimeMillis(), fromUser = false, prompt = "Failed to fetch")
-//        addMessage(responseMessage)
         val lastIndex = _messages.lastIndex
         _messages[lastIndex].promptType = action
         _messages[lastIndex].responseImageUrl = null
@@ -106,7 +93,6 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
     }
 
     suspend fun classify(context: Context,prompt: String,imageUri: Uri?){
-//        Toast.makeText(context,"classify triggered",Toast.LENGTH_SHORT).show()
         isGenerating = true
         val userMessage = Message(fulltext = prompt, timestamp = System.currentTimeMillis(), fromUser = true, image = imageUri)
         userMessage.displayedText.value = prompt
@@ -122,16 +108,13 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
         addMessage(responseMessage)
         classifyJob = viewModelScope.launch {
             val category = chatbotRepository.classifyPrompt(prompt)
-            Toast.makeText(context, "$category", Toast.LENGTH_SHORT).show()
             val action = PromptCategories.promptMap[category]
-            Toast.makeText(context, "$category", Toast.LENGTH_SHORT).show()
             if (action == null || action == "Failed" || action=="Stopped") {
                 sendFailedRepsonse(action ?: "Failed")
                 responseMessage.showShimmer.value = false
                 isGenerating = false
                 return@launch
             }
-//        _messages[userIndex].promptType = action
             _messages[_messages.lastIndex].promptType = action
 
             sendMessage(prompt, imageUri, action!!, context)
@@ -143,27 +126,13 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
 
 
     fun sendMessage(text:String,image:Uri?=null,action:String,context: Context){
-
-//        val userMessage = Message(fulltext = text, timestamp = System.currentTimeMillis(), fromUser = true, image = image, promptType = action)
-//        userMessage.displayedText.value = text
-//
-//        addMessage(userMessage)
-
-//        currentlyProcessedMessageId = responseMessage.id
-
-
-
         val lastIndex = _messages.lastIndex
         chatJob = viewModelScope.launch {
             try{
-
-//                val result = ChatbotRetrofitInstance.api.chat(ChatRequest(text))
-//                val fullText = result.response ?: "No response"
                 when(action){
                     "image_generation"->{
 
                             val result = chatbotRepository.generateImage(text)
-                            //get
                             val url = BASE_URL + result
                             _messages[lastIndex].responseImageUrl = url
                             _messages[lastIndex].showShimmer.value = false;
@@ -174,21 +143,18 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
                             _messages[lastIndex].requestImageUri = image
                             val imageFile = getFileFromUri(context, image)
                             val result = chatbotRepository.removeBackground(imageFile!!)
-                            //get
                             val url = BASE_URL + result
                             clearImage()
                             _messages[lastIndex].responseImageUrl = url
                             _messages[lastIndex].showShimmer.value = false;
                         }
                         else{
-                            Toast.makeText(context,"image is null",Toast.LENGTH_SHORT).show()
                         }
                     }
                     "image_editing"->{
                         if(image!=null) {
                             val imageFile = getFileFromUri(context, image)
                             val result = chatbotRepository.editImage(imageFile!!,text)
-                            //get
                             val url = BASE_URL + result
                             _messages[lastIndex].requestImageUri = image
                             _messages[lastIndex].responseImageUrl = url
@@ -199,18 +165,16 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
                         val result = chatbotRepository.getChatPrompt(prompt = text)
                         _messages[lastIndex].fulltext = result;
                         _messages[lastIndex].showShimmer.value = false;
+                        _messages[lastIndex].displayedText.value = cleanResponse(_messages[lastIndex].displayedText.value )
 
 
                         for (i in result.indices) {
-                            delay(20) // Typing speed
+                            delay(20)
                             _messages[lastIndex].displayedText.value = result.substring(0, i + 1)
                         }
                     }
                 }
 
-
-//                currentlyProcessedMessageId = null
-//                isGenerating = false;
 
             }
             catch (e:CancellationException){
@@ -225,8 +189,6 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
 
             }
             catch (e:Exception){
-//                isGenerating = false
-//                currentlyProcessedMessageId = null
                 _messages[lastIndex].responseImageUrl = null
                 _messages[lastIndex].copy(
                     fulltext = "Failed to Fetch",
@@ -241,15 +203,11 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
                 isGenerating=false
                 chatJob = null
                 classifyJob = null
-//                currentlyProcessedMessageId = null
             }
         }
     }
 
     fun regenerate(messageId:String,prompt:String,context: Context){
-//        currentlyProcessedMessageId = messageId
-//        Toast.makeText(context,"Regen called",Toast.LENGTH_SHORT).show()
-        Toast.makeText(context,"$isGenerating",Toast.LENGTH_SHORT).show()
         isGenerating = true
         val itemIndex = _messages.indexOfFirst { it.id == messageId }
 
@@ -270,14 +228,12 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
             isGenerating = false
             return
         }
-        Toast.makeText(context,"$action",Toast.LENGTH_SHORT).show()
-        viewModelScope.launch {
+        chatJob = viewModelScope.launch {
             try{
                 when(action){
                     "image_generation"->{
 
                         val result = chatbotRepository.generateImage(prompt)
-                        //get
                         val url = BASE_URL + result
                         _messages[itemIndex].responseImageUrl = url
                         _messages[itemIndex].showShimmer.value = false;
@@ -287,7 +243,6 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
                             val imageUri = _messages[itemIndex].requestImageUri
                             val imageFile = getFileFromUri(context,imageUri!!)
                             val result = chatbotRepository.removeBackground(imageFile!!)
-                            //get
                             val url = BASE_URL + result
                             _messages[itemIndex].responseImageUrl = url
                             _messages[itemIndex].showShimmer.value = false;
@@ -297,23 +252,23 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
                             val imageUri = _messages[itemIndex].requestImageUri
                             val imageFile = getFileFromUri(context, imageUri!!)
                             val result = chatbotRepository.editImage(imageFile!!,prompt)
-                            //get
                             val url = BASE_URL + result
                             _messages[itemIndex].responseImageUrl = url
                             _messages[itemIndex].showShimmer.value = false;
 
                     }
                     "text"->{
-                        Toast.makeText(context,"Regen text",Toast.LENGTH_SHORT).show()
                         val result = chatbotRepository.getChatPrompt(prompt = prompt)
                         _messages[itemIndex].fulltext = result;
                         _messages[itemIndex].showShimmer.value = false;
                         _messages[itemIndex].responseImageUrl = null
+                        _messages[itemIndex].displayedText.value = cleanResponse(_messages[itemIndex].displayedText.value )
+
 
 
 
                         for (i in result.indices) {
-                            delay(20) // Typing speed
+                            delay(20)
                             _messages[itemIndex].displayedText.value = result.substring(0, i + 1)
                         }
                     }
@@ -347,7 +302,6 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
 
     fun stopMessage(){
          classifyJob?.cancel()
-//        isGenerating = false
          chatJob?.cancel()
     }
 
@@ -355,26 +309,30 @@ class ChatbotViewModel @Inject constructor(private val chatbotRepository: Chatbo
         viewModelScope.launch {
             val response = chatbotRepository.downloadFile(url)
             if(response==null){
-                Toast.makeText(context,"Download failed",Toast.LENGTH_SHORT).show()
                 return@launch
             }
             else{
                 val fileName = "neoscope_${System.currentTimeMillis()}.jpg"
                 val file = File(context.cacheDir, fileName)
 
-// Step 1: Write downloaded bytes to file
                 response.body()?.byteStream()?.use { input ->
                     FileOutputStream(file).use { output ->
                         input.copyTo(output)
                     }
                 }
 
-// Step 2: Convert File to Uri
                 val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
                 ImageHelper.saveToGallery(context,uri)
-//                val saved = ImageHelper.saveToGallery(context,)
             }
         }
+    }
+
+    fun cleanResponse(text: String): String {
+        return text
+            .replace(Regex("\\(.*?\\)|\\{.*?\\}|\\|.*?\\||<\\|.*?\\|>|<.*?>"), "")
+            .replace(Regex("\\[[0-9]+m\\]"), "")
+            .replace(Regex("\\s+"), " ")
+            .trim()
     }
 
 

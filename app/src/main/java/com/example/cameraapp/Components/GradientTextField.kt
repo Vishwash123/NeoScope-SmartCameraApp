@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField // Import BasicTextField
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -31,11 +31,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle // Import TextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.cameraapp.R
@@ -55,7 +54,7 @@ fun GradientTextField(
 
     val gradient = Brush.horizontalGradient(
         colorStops = arrayOf(
-            0f to Color(0x5080C5E5), // 0x50 = 31% alpha
+            0f to Color(0x5080C5E5),
             1f to Color(0x504A90C1)
         )
     )
@@ -80,14 +79,10 @@ fun GradientTextField(
         BasicTextField(
             value = content.value,
             onValueChange = { content.value = it },
-            // Apply text color directly via textStyle
             textStyle = TextStyle(color = Color.White),
             modifier = Modifier
                 .fillMaxSize()
-                // BasicTextField doesn't have a direct 'shape' parameter.
-                // The background and border of the parent Box already handle the shape.
-                // If you want internal padding, add it here:
-                .padding(horizontal = 16.dp, vertical = 15.dp) // Example: add some internal padding
+                .padding(horizontal = 16.dp, vertical = 15.dp)
                 .horizontalScroll(scrollState)
                 .focusRequester(focusRequester),
             singleLine = true,
@@ -99,38 +94,29 @@ fun GradientTextField(
                 onDone = { keyboardController.hide() }
             ),
             visualTransformation = if (name == "password" && !showPassword.value) PasswordVisualTransformation() else VisualTransformation.None,
-            // Use decorationBox to add leading/trailing icons or other custom layout
             decorationBox = { innerTextField ->
                 Row(
                     modifier = Modifier.fillMaxSize(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = if (name == "password") Arrangement.SpaceBetween else Arrangement.Center
                 ) {
-                    // Placeholder for a potential leading icon (if needed later)
-                    // if (name == "someOtherField") {
-                    //     Icon(...)
-                    // }
-
-                    // The actual BasicTextField content
                     Box(
-                        modifier = Modifier.weight(1f) // Text field takes available space
-                            .padding(start = 0.dp, end = 0.dp) // Adjust padding based on icon
+                        modifier = Modifier.weight(1f)
+                            .padding(start = 0.dp, end = 0.dp)
                     ) {
-                        innerTextField() // This is where the actual text input is rendered
+                        innerTextField()
                     }
 
-
-                    // Trailing icon for password field
                     if (name == "password") {
                         IconButton(
-                            onClick = { showPassword.value = !showPassword.value }, // Add some padding to the right of the icon
+                            onClick = { showPassword.value = !showPassword.value },
                         ) {
                             Icon(
 
                                 painter = if (showPassword.value) painterResource(id = R.drawable.show_pass) else painterResource(id = R.drawable.hide_pass),
                                 contentDescription = if (showPassword.value) "Hide password" else "Show password",
                                 tint = Color.White,
-                                modifier = Modifier.size(24.dp) // Adjust icon size if needed
+                                modifier = Modifier.size(24.dp)
                             )
                         }
                     }
@@ -140,8 +126,3 @@ fun GradientTextField(
     }
 }
 
-@Preview
-@Composable
-fun GradientBasicTextFieldPreview() {
-    GradientTextField(22.dp, 10.dp)
-}

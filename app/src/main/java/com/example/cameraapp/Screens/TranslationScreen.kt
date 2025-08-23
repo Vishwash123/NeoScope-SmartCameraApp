@@ -2,13 +2,9 @@ package com.example.cameraapp.Screens
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,7 +21,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
@@ -51,7 +46,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
@@ -62,19 +58,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.cameraapp.Components.TTSManager
 import com.example.cameraapp.R
 import com.example.cameraapp.ViewModels.CameraViewModel
 import com.example.cameraapp.ui.theme.Montserrat
-import com.google.mlkit.nl.translate.TranslateLanguage
 import java.io.File
-import kotlin.math.exp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -125,20 +113,49 @@ fun TranslationScreen(
         }
     }
 
+
     var isSheetOpen by remember { mutableStateOf(true) }
     val file = imageUri?.path?.let { File(it) }
-    Box(modifier = modifier.fillMaxSize()){
+    Box(modifier = modifier.fillMaxSize().background(Color.Black)){
         if(file!=null && file.exists()) {
+            val options = remember(file) {
+                BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                    .also { BitmapFactory.decodeFile(file.absolutePath, it) }
+            }
+
+            val contentScale = remember(options.outWidth to options.outHeight) {
+                if (options.outWidth > options.outHeight) {
+                    ContentScale.Fit
+                } else {
+                    ContentScale.Crop
+                }
+            }
             Image(
-                painter = rememberAsyncImagePainter(model = file),
+                painter = BitmapPainter(BitmapFactory.decodeFile(file.path).asImageBitmap()),
                 contentDescription = null,
                 modifier = modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+                contentScale = contentScale
             )
         }
         else{
-            Toast.makeText(context,"File doesn't exist", Toast.LENGTH_SHORT).show()
         }
+
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 60.dp, start = 20.dp, end = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Image(
+                modifier = Modifier.height(40.dp).width(40.dp)
+                    .clickable {
+                        cameraViewModel.discardImage(imageUri!!)
+                        navHostController.popBackStack()
+                    },
+                painter = painterResource(R.drawable.back),
+                contentDescription = null
+            )
+        }
+
 
         Row(
             modifier = Modifier
@@ -286,33 +303,18 @@ fun DropDownMenuBox(
             )
         }
 
-//        Box(){
-//
-//            DropdownMenu(
-//                modifier = Modifier
-//                    .background(brush = gradient, shape = RoundedCornerShape(8.dp))
-//                    .border(shape = RoundedCornerShape(8.dp), color = Color.White, width = 1.dp)
-//                    .heightIn(max = 400.dp)
-//                    .width(100.dp),
-//                expanded = expanded,
-//                onDismissRequest = {onExpandedChange(false)}
-//            )
+
         Box(
-            modifier = Modifier.width(120.dp), // same width as the dropdown trigger
-            contentAlignment = Alignment.TopCenter // align menu center to trigger
+            modifier = Modifier.width(120.dp),
+            contentAlignment = Alignment.TopCenter
         ) {
-//            androidx.compose.animation.AnimatedVisibility(
-//                visible = expanded,
-//                enter = fadeIn() + scaleIn(),
-//                exit = fadeOut() + scaleOut()
-//            ) {
                 DropdownMenu(
                     modifier = Modifier
-                        .offset { IntOffset(x = 0, y = 0) } // optional if misaligned vertically
+                        .offset { IntOffset(x = 0, y = 0) }
                         .background(brush = gradient, shape = RoundedCornerShape(8.dp))
                         .border(shape = RoundedCornerShape(8.dp), color = Color.White, width = 1.dp)
                         .heightIn(max = 400.dp)
-                        .width(120.dp), // slightly wider than trigger if needed
+                        .width(120.dp),
                     expanded = expanded,
                     onDismissRequest = { onExpandedChange(false) }
                 )
@@ -354,7 +356,7 @@ fun DropDownMenuBox(
                         )
                     }
                 }
-//            }
+
         }
     }
 
@@ -429,7 +431,7 @@ fun TranslateBottomSheetContent(
             }
 
         }
-        //TARGET
+
 
         Spacer(modifier = Modifier.height(30.dp))
         Text(

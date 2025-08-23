@@ -1,6 +1,5 @@
 package com.example.cameraapp.Components
 
-import android.speech.tts.TextToSpeech
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -55,7 +53,6 @@ fun AiMessageItem(modifier: Modifier=Modifier,aiMessage: Message,onRegenerate:(S
 fun AiShimmerPlaceholder(){
     Row(
         modifier = Modifier.shimmer()
-            // <- Affects all subsequent UI elements
             .fillMaxWidth()
             .padding(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -104,9 +101,6 @@ fun ActualAiMessageItem(modifier: Modifier=Modifier,aiMessage: Message,onRegener
         )
     )
 
-
-
-    //1C7DC6
     Column(
         modifier = modifier.padding(16.dp).background(Color.Transparent).wrapContentSize(),
     ) {
@@ -123,7 +117,6 @@ fun ActualAiMessageItem(modifier: Modifier=Modifier,aiMessage: Message,onRegener
             if(aiMessage.responseImageUrl!=null){
                 Image(
                     modifier = Modifier.size(200.dp).clickable {
-                        //open imahe viewer and downlader
                         onImageClicked(aiMessage.responseImageUrl)
                     }.clip(RoundedCornerShape(16.dp)).border(width = 0.5.dp,Color.White, shape = RoundedCornerShape(16.dp)),
                     contentScale = ContentScale.Crop,
@@ -166,20 +159,3 @@ fun ActualAiMessageItem(modifier: Modifier=Modifier,aiMessage: Message,onRegener
     }
 }
 
-@Preview
-@Composable
-fun ShimmerPreview(){
-   AiShimmerPlaceholder()
-}
-//@Preview
-//@Composable
-//fun AiMessagePreview(){
-//    AiMessageItem(modifier = Modifier,Message("Parallax is a visual effect in motion graphics that simulates depth \n" +
-//            "by making objects at different distances move at different speeds relative to the viewer's perspective. This technique can make flat images appear three-dimensional by creating a sense of space \n" +
-//            "and motion within a scene.\n" +
-//            "\n" +
-//            "In an animated short film, a scene where a character is walking through a forest can employ the parallax effect to enhance depth perception. The trees and foliage in the foreground move faster across the frame than the mountains and clouds in the background, giving the illusion that the character is moving through a deep, immersive environment. This not only enriches the visual experience but also adds to the storytelling by emphasizing the journey through different layers of the scene.\n" +
-//            "\n" +
-//            "Technical definition\n" +
-//            "Creating a parallax effect involves layering different elements of a scene at varying distances from the viewpoint and animating them at different speeds. The closer an object is to the viewpoint, the faster it moves. This can be achieved in motion graphics.j",System.currentTimeMillis(),false))
-//}

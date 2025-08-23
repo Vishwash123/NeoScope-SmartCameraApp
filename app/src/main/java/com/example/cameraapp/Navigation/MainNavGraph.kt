@@ -10,7 +10,6 @@ import com.example.cameraapp.Components.ResponseImagePreview
 import com.example.cameraapp.Screens.ChatbotScreen
 import com.example.cameraapp.Screens.MainScreen
 import com.example.cameraapp.Screens.PreviewScreen
-import com.example.cameraapp.Screens.TestHome
 import com.example.cameraapp.ViewModels.CameraViewModel
 import com.example.cameraapp.ViewModels.ChatbotViewModel
 
@@ -32,7 +31,7 @@ fun NavGraphBuilder.MainNavGraph(navHostController: NavHostController) {
             val parentEntry = remember(navBackStackEntry){
                 navHostController.getBackStackEntry(MAIN_ROUTE)
             }
-//            val cameraViewModel:CameraViewModel = hiltViewModel(parentEntry)
+
             val chatbotViewModel:ChatbotViewModel = hiltViewModel(parentEntry)
             ChatbotScreen(navHostController = navHostController, chatbotViewModel = chatbotViewModel)
         }

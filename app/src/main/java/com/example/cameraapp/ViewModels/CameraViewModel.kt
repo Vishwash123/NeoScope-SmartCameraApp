@@ -1,6 +1,6 @@
 package com.example.cameraapp.ViewModels
 
-import android.content.ContentValues
+
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
@@ -40,7 +39,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
-import androidx.core.net.toUri
 import com.example.cameraapp.ImageHelper
 import com.example.cameraapp.Models.EfficientDetHelper
 import org.tensorflow.lite.task.vision.detector.Detection
@@ -48,11 +46,19 @@ import org.tensorflow.lite.task.vision.detector.Detection
 @HiltViewModel
 class CameraViewModel @Inject constructor():ViewModel(){
     var shouldCleanUp = mutableStateOf(false)
+    private val _flashEnabled = mutableStateOf<Boolean>(false)
+    var flashEnabled:State<Boolean> = _flashEnabled
     var selectedMode by mutableStateOf(ImageAnalysisOption.NORMAL)
     private var imageCapture:ImageCapture? = null
     private val _capturedImageUri = mutableStateOf<Uri?>(null)
     val capturedImageUri: State<Uri?> = _capturedImageUri
     var capturedImageBitmap:Bitmap? = null
+    var selectedPage by mutableStateOf(0)
+        private set
+
+    fun updatePage(newPage: Int) {
+        selectedPage = newPage
+    }
     private var shutterAnimating by mutableStateOf(false)
     var currentFrame by mutableStateOf(0)
     val frames = listOf(
@@ -62,6 +68,11 @@ class CameraViewModel @Inject constructor():ViewModel(){
         R.drawable.camera_mid,
         R.drawable.cam_open
     )
+
+
+    fun toggleFlash(state:Boolean){
+        _flashEnabled.value = state
+    }
 
     fun pickSelectedMode(model: ImageAnalysisOption){
         this.selectedMode = model
@@ -85,11 +96,10 @@ class CameraViewModel @Inject constructor():ViewModel(){
             }
             tempFile
         } else {
-            File(uri.path!!) // Already a file:// from camera
+            File(uri.path!!)
         }
         _capturedImageUri.value = Uri.fromFile(realFile)
         val bitmap = BitmapFactory.decodeFile(realFile.path)
-        Toast.makeText(context,"bitmap : $bitmap",Toast.LENGTH_LONG).show()
         capturedImageBitmap = bitmap
     }
 
@@ -106,6 +116,14 @@ class CameraViewModel @Inject constructor():ViewModel(){
     }
 
     fun captureImage(context:Context,onImageCaptured:(Uri)->Unit){
+
+        imageCapture?.flashMode = if(flashEnabled.value){
+            ImageCapture.FLASH_MODE_ON
+        } else{
+            ImageCapture.FLASH_MODE_OFF
+        }
+
+
         val photoFile = File(context.cacheDir,"${System.currentTimeMillis()}.jpg")
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
         imageCapture?.takePicture(
@@ -121,7 +139,6 @@ class CameraViewModel @Inject constructor():ViewModel(){
                 }
 
                 override fun onError(exc: ImageCaptureException) {
-                    Toast.makeText(context, "Capture failed: ${exc.message}", Toast.LENGTH_SHORT).show()
                 }
 
             }
@@ -129,32 +146,10 @@ class CameraViewModel @Inject constructor():ViewModel(){
     }
 
     fun saveToGallery(context: Context,uri:Uri){
-//        val resolver = context.contentResolver
-//        val inputStream = resolver.openInputStream(uri)?:return
-//        val filename = "neoscope_${System.currentTimeMillis()}.jpg"
-//
-//        val contentValues = ContentValues().apply {
-//            put(MediaStore.Images.Media.DISPLAY_NAME,filename)
-//            put(MediaStore.Images.Media.MIME_TYPE,"image/jpeg")
-//            put(MediaStore.Images.Media.RELATIVE_PATH,Environment.DIRECTORY_PICTURES)
-//        }
-//
-//        val outputUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues)
-//        outputUri?.let {
-//            resolver.openOutputStream(it)?.use { outputStream->
-//                inputStream.copyTo(outputStream)
-//            }
-//        }
-//
-//        inputStream.close()
-//        Toast.makeText(context,"Image saved to device",Toast.LENGTH_SHORT).show()
         ImageHelper.saveToGallery(context,uri)
     }
 
     fun discardImage(uri:Uri){
-//        File(uri.path!!).delete()
-//        _capturedImageUri.value = null
-//        capturedImageBitmap = null
         _capturedImageUri.value = null
         capturedImageBitmap = null
         File(uri.path!!).delete()
@@ -378,7 +373,7 @@ class CameraViewModel @Inject constructor():ViewModel(){
         "Welsh" to TranslateLanguage.WELSH
     )
 
-//    val reversedLanguageMap = languageMap.entries.associate { (name, code) -> code to name }
+
     val codeToNameMap = mapOf(
     "af" to "Afrikaans",
     "sq" to "Albanian",
@@ -523,14 +518,12 @@ class CameraViewModel @Inject constructor():ViewModel(){
                 qrText.startsWith("whatsapp:") ||
                         qrText.startsWith("intent:") ||
                         qrText.contains("://") -> {
-                    // Try opening app deep links or custom schemes
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(qrText))
                     context.startActivity(intent)
                 }
 
                 qrText.startsWith("BEGIN:VCARD") -> {
                     Toast.makeText(context, "Detected contact info (vCard).", Toast.LENGTH_LONG).show()
-                    // Optionally parse and show contact info here
                 }
 
                 qrText.startsWith("WIFI:") -> {
@@ -538,7 +531,6 @@ class CameraViewModel @Inject constructor():ViewModel(){
                 }
 
                 else -> {
-                    // Fallback: treat as plain text
                     Toast.makeText(context, "Content: $qrText", Toast.LENGTH_LONG).show()
                 }
             }

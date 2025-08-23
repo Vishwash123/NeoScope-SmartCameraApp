@@ -1,9 +1,8 @@
 package com.example.cameraapp.Screens
 
-import CustomizableGradientText
+
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -34,13 +33,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.cameraapp.ChatbotBackend.SpeechManagerState
 import com.example.cameraapp.ChatbotBackend.SpeechRecognizerManager
 import com.example.cameraapp.Components.ChatBoxTextField
 import com.example.cameraapp.Components.ChatsLazyColumn
+import com.example.cameraapp.Components.CustomizableGradientText
 import com.example.cameraapp.Components.SpeechToTextWindow
 import com.example.cameraapp.Components.StopButton
 import com.example.cameraapp.Navigation.ScreenSealed
@@ -57,7 +56,6 @@ fun ChatbotScreen(
     chatbotViewModel: ChatbotViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-//    val coroutineScope = rememberCoroutineScope()
     val image by chatbotViewModel.selectedImageUri
 
     val launcher = rememberLauncherForActivityResult(
@@ -83,7 +81,6 @@ fun ChatbotScreen(
     val messages = chatbotViewModel.messages
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-//    val isTextBoxVisible = remember{ mutableStateOf(!chatbotViewModel.isGenerating) }
     Box(modifier = modifier.fillMaxSize()) {
         Image(
             modifier = Modifier.fillMaxSize().alpha(if (isAudioRecording) 0.9f else 1f),
@@ -93,7 +90,6 @@ fun ChatbotScreen(
         )
         if (isAudioRecording) {
             SpeechToTextWindow( modifier=Modifier.align(Alignment.Center).padding(16.dp),context = LocalContext.current, onSendClicked = {
-//                chatbotViewModel.sendMessage(SpeechManagerState.currentText.value)
                 val imageUri = chatbotViewModel.getImage();
                 val currentText = SpeechManagerState.currentText.value
                 coroutineScope.launch {
@@ -181,10 +177,6 @@ fun ChatbotScreen(
                                 chatbotViewModel.classify(context,text,imageUri)
 
                             }
-//                            coroutineScope.launch {
-////                                if()
-//                                listState.animateScrollToItem(chatbotViewModel.messages.lastIndex)
-//                            }
                             if (chatbotViewModel.messages.isNotEmpty()) {
                                 coroutineScope.launch {
                                     listState.animateScrollToItem(chatbotViewModel.messages.lastIndex)
@@ -198,13 +190,12 @@ fun ChatbotScreen(
                             SpeechManagerState.isPaused.value = false
                         },
                         onImageUploadClicked = {
-                            //pick image and set the uri in viewmdoel
                            launcher.launch("image/*")
                         },
                         onRemoveImageClicked = {
                             chatbotViewModel.clearImage()
                         }
-                        , !chatbotViewModel.isGenerating,speechManager,
+                        , !chatbotViewModel.isGenerating,
                         image = image
                     )
                     StopButton(
@@ -225,8 +216,3 @@ fun ChatbotScreen(
     }
 }
 
-@Preview
-@Composable
-fun ChatbotPreview(){
-    ChatbotScreen(navHostController = rememberNavController())
-}

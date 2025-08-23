@@ -1,7 +1,7 @@
 package com.example.cameraapp.Components
 
 
-import android.content.Context
+
 import android.net.Uri
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
@@ -10,9 +10,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,7 +31,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
@@ -47,11 +44,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.cameraapp.ChatbotBackend.SpeechManagerState
 import com.example.cameraapp.ChatbotBackend.SpeechRecognizerManager
 import com.example.cameraapp.R
-import com.example.cameraapp.ViewModels.ChatbotViewModel
 import com.example.cameraapp.ui.theme.Montserrat
 
 @Composable
@@ -62,7 +56,6 @@ fun ChatBoxTextField(
     onImageUploadClicked:()->Unit,
     onRemoveImageClicked:()->Unit,
     isVisible: Boolean,
-    speechManager: SpeechRecognizerManager,
     image: Uri?=null
 ) {
     val gradient = Brush.horizontalGradient(
@@ -83,11 +76,6 @@ fun ChatBoxTextField(
         disabledIndicatorColor = Color.Transparent,
         errorIndicatorColor = Color.Transparent
     )
-//    AnimatedVisibility(
-//        visible = isVisible,
-//        enter = fadeIn() + slideInVertically(),
-//        exit = fadeOut() + slideOutVertically()
-//    ) {
 
     val alpha by animateFloatAsState(if(isVisible) 1f else 0f)
     val offsetY by animateFloatAsState(if(isVisible) 0f else 100f)
@@ -100,7 +88,6 @@ fun ChatBoxTextField(
                 }
                 .padding(12.dp)
                 .fillMaxWidth()
-//                .wrapContentHeight()
                 .height(150.dp)
                 .background(
                     brush = gradient,
@@ -157,7 +144,6 @@ fun ChatBoxTextField(
                         Image(
                             modifier = Modifier.padding(start = 16.dp).size(34.dp)
                                 .clickable {
-                                    //click tono upload image and set it in view model
                                     onImageUploadClicked()
                                 },
                             painter = painterResource(R.drawable.upload_image),
@@ -169,6 +155,7 @@ fun ChatBoxTextField(
                             modifier = Modifier.padding(start = 16.dp),
                             onRemoveClicked = onRemoveImageClicked,
                             image
+
                         )
                     }
 
@@ -203,12 +190,7 @@ fun ChatBoxTextField(
                 }
             }
         }
-//    }
+
 
 }
 
-@Preview
-@Composable
-fun ChatBoxTextFieldPreview(){
-//    ChatBoxTextField()
-}

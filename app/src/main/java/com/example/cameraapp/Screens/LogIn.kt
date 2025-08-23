@@ -1,7 +1,9 @@
 package com.example.cameraapp.Screens
 
-import CustomizableGradientText
+
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +27,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -36,11 +39,13 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.cameraapp.Components.CustomizableGradientText
 import com.example.cameraapp.Components.GradientButton
 import com.example.cameraapp.Components.GradientTextField
 import com.example.cameraapp.Components.LineWithText
 import com.example.cameraapp.FirebaseService
 import com.example.cameraapp.Navigation.AUTH_ROUTE
+import com.example.cameraapp.Navigation.LocalGoogleAuth
 import com.example.cameraapp.Navigation.MAIN_ROUTE
 import com.example.cameraapp.Navigation.ScreenSealed
 import com.example.cameraapp.R
@@ -48,6 +53,9 @@ import com.example.cameraapp.ui.theme.Montserrat
 
 @Composable
 fun LogIn(navHostController: NavHostController){
+    val googleAuth = LocalGoogleAuth.current
+    val context = LocalContext.current
+
     val gradient = Brush.horizontalGradient(
         colorStops =  arrayOf(
             0.0f to Color(0xFF6AC4ED),
@@ -76,7 +84,7 @@ fun LogIn(navHostController: NavHostController){
     val emailScrollState = rememberScrollState()
     val passwordScrollState = rememberScrollState()
 
-    //val bottomTextGradient = Brush.
+
     Box(modifier = Modifier.fillMaxSize()){
         Image(painter = painterResource(R.drawable.auth_bg),
             contentDescription = null,
@@ -182,9 +190,16 @@ fun LogIn(navHostController: NavHostController){
 
             Spacer(modifier = Modifier.height(50.dp))
             GradientButton("LOG IN", onClick = {
+                if(email.value.isEmpty() || password.value.isEmpty()) {
+                    Toast.makeText(context,"All fields are required", Toast.LENGTH_SHORT).show()
+                    return@GradientButton
+                }
                 FirebaseService.firebaseAuth.signInWithEmailAndPassword(email.value,password.value).addOnSuccessListener {
                     navHostController.navigate(MAIN_ROUTE){
-                        popUpTo(AUTH_ROUTE)
+                        popUpTo(AUTH_ROUTE){
+                            inclusive = true
+                        }
+
                     }
                 }
             })
@@ -194,40 +209,40 @@ fun LogIn(navHostController: NavHostController){
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            CustomizableGradientText(
-                text = "SIGN IN WITH",
-                fontSize = 14.sp,
-                letterSpacing = 0.08.em, // 8%
-                gradientStartColor = Color(0xFFF2FBFF),
-                gradientEndColor = Color(0xFFB3D4ED),
-                dropShadowColor = Color(0xFF00B7FF),
-                dropShadowBlurRadius = 1.4f,
-                dropShadowOffsetX = 0f,
-                dropShadowOffsetY = 0f,
-                strokeColor = Color(0xFFFCFCFC), // Figma stroke color (for reference)
-                strokeWeight = 0.2f, // Figma stroke weight (for reference)
-                // Example of changing font family and font weight
-                fontFamily = Montserrat, // Replace with your actual imported font family
-                fontWeight = FontWeight.Bold // Example font weight
-            )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             Row(
                 modifier = Modifier
                     .padding(horizontal = 36.dp)
                     .fillMaxWidth()
-                    .align(Alignment.CenterHorizontally),
+                    .align(Alignment.CenterHorizontally)
+                    .clickable {
+                        googleAuth.launchGoogleSignIn()
+                    },
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.Center
             )
             {
                 Image(painter = painterResource(R.drawable.google), modifier = Modifier.height(30.dp).width(30.dp), contentDescription = null)
-                Image(painter = painterResource(R.drawable.fb), modifier = Modifier.height(30.dp).width(30.dp), contentDescription = null)
-                Image(painter = painterResource(R.drawable.x), modifier = Modifier.height(30.dp).width(30.dp), contentDescription = null)
-
+                Spacer(modifier = Modifier.width(14.dp))
+                CustomizableGradientText(
+                    text = "Sign in with Google",
+                    fontSize = 15.sp,
+                    letterSpacing = 0.08.em, // 8%
+                    gradientStartColor = Color(0xFFF2FBFF),
+                    gradientEndColor = Color(0xFFB3D4ED),
+                    dropShadowColor = Color(0xFF00B7FF),
+                    dropShadowBlurRadius = 1.4f,
+                    dropShadowOffsetX = 0f,
+                    dropShadowOffsetY = 0f,
+                    strokeColor = Color(0xFFFCFCFC),
+                    strokeWeight = 0.2f,
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Bold
+                )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(40.dp))
             Row(
                 modifier = Modifier.padding(16.dp).fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
@@ -242,11 +257,11 @@ fun LogIn(navHostController: NavHostController){
                     dropShadowBlurRadius = 1.4f,
                     dropShadowOffsetX = 0f,
                     dropShadowOffsetY = 0f,
-                    strokeColor = Color(0xFFFCFCFC), // Figma stroke color (for reference)
-                    strokeWeight = 0.2f, // Figma stroke weight (for reference)
-                    // Example of changing font family and font weight
-                    fontFamily = Montserrat, // Replace with your actual imported font family
-                    fontWeight = FontWeight.Bold // Example font weight
+                    strokeColor = Color(0xFFFCFCFC),
+                    strokeWeight = 0.2f,
+
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 CustomizableGradientText(
@@ -263,11 +278,10 @@ fun LogIn(navHostController: NavHostController){
                     dropShadowBlurRadius = 1.4f,
                     dropShadowOffsetX = 0f,
                     dropShadowOffsetY = 0f,
-                    strokeColor = Color(0xFFFCFCFC), // Figma stroke color (for reference)
-                    strokeWeight = 0.2f, // Figma stroke weight (for reference)
-                    // Example of changing font family and font weight
-                    fontFamily = Montserrat, // Replace with your actual imported font family
-                    fontWeight = FontWeight.Bold // Example font weight
+                    strokeColor = Color(0xFFFCFCFC),
+                    strokeWeight = 0.2f,
+                    fontFamily = Montserrat,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
@@ -277,8 +291,4 @@ fun LogIn(navHostController: NavHostController){
 }
 
 
-@Preview
-@Composable
-fun LogInPreview(){
-    LogIn(rememberNavController())
-}
+
