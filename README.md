@@ -35,36 +35,38 @@ Firebase Authentication
 
 Google Sign-In
 
-🎥 Demo
-## 📸 Screenshots
+##🎥 Demo
+
+## 📸 ScreenShots
 
 ### Authentication
-![Authentication](screenshots/Authentication.jpg)
+![Authentication](ScreenShots/Authentication.jpg)
 
 ### Main Interface
-![Main Screen](screenshots/MainScreen.jpg)
-![Voice Input](screenshots/VoiceInput.jpg)
+![Main Screen](ScreenShots/MainScreen.jpg)
+![Voice Input](ScreenShots/VoiceInput.jpg)
 
 ### Chatbot
-![Chatbot 1](screenshots/Chatbot1.jpg)
-![Chatbot 2](screenshots/Chatbot2.jpg)
-![Chatbot 3](screenshots/Chatbot3.jpg)
-![Chatbot 4](screenshots/Chatbot4.jpg)
-![Chatbot 5](screenshots/Chatbot5.jpg)
-![Chatbot 6](screenshots/Chatbot6.jpg)
+![Chatbot 1](ScreenShots/Chatbot1.jpg)
+![Chatbot 2](ScreenShots/Chatbot2.jpg)
+![Chatbot 3](ScreenShots/Chatbot3.jpg)
+![Chatbot 4](ScreenShots/Chatbot4.jpg)
+![Chatbot 5](ScreenShots/Chatbot5.jpg)
+![Chatbot 6](ScreenShots/Chatbot6.jpg)
 
 ### Object Detection & QR
-![Object Detection](screenshots/ObjectDetection.jpg)
-![QR Code Scanner](screenshots/QRCodeScanner.jpg)
+![Object Detection](ScreenShots/ObjectDetection.jpg)
+![QR Code Scanner](ScreenShots/QRCodeScanner.jpg)
 
 ### Text Recognition & Translation
-![Text Recognition 1](screenshots/TextRecognition1.jpg)
-![Text Recognition 2](screenshots/Text Recognition2.jpg)
-![Translation 1](screenshots/TranslationScreen1.jpg)
-![Translation 2](screenshots/TranslationScreen2.jpg)
+![Text Recognition 1](ScreenShots/TextRecognition1.jpg)
+![Text Recognition 2](ScreenShots/Text Recognition2.jpg)
+![Translation 1](ScreenShots/TranslationScreen1.jpg)
+![Translation 2](ScreenShots/TranslationScreen2.jpg)
 
 
-##Video Demo
+
+## Video Demo
 
 [Watch Full Demo Video](https://github.com/Vishwash123/NeoScope-SmartCameraApp/releases/download/v1.0/neoscope-demo.mp4)
 
