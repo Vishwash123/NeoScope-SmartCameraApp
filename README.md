@@ -46,6 +46,7 @@ Google Sign-In
   </tr>
 </table>
 
+
 ### Main Interface
 <table>
   <tr>
@@ -53,6 +54,7 @@ Google Sign-In
     <td><img src="ScreenShots/VoiceInput.jpg" width="200"></td>
   </tr>
 </table>
+
 
 ### Chatbot
 <table>
@@ -68,6 +70,7 @@ Google Sign-In
   </tr>
 </table>
 
+
 ### Object Detection & QR
 <table>
   <tr>
@@ -75,6 +78,7 @@ Google Sign-In
     <td><img src="ScreenShots/QRCodeScanner.jpg" width="200"></td>
   </tr>
 </table>
+
 
 ### Text Recognition & Translation
 <table>
