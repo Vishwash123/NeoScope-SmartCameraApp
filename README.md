@@ -39,30 +39,36 @@ Google Sign-In
 
 ## 📸 ScreenShots
 
-### Authentication
-![Authentication](ScreenShots/Authentication.jpg)
+<!-- Authentication -->
+<h3>Authentication</h3>
+<img src="ScreenShots/Authentication.jpg" width="200">
 
-### Main Interface
-![Main Screen](ScreenShots/MainScreen.jpg)
-![Voice Input](ScreenShots/VoiceInput.jpg)
+<!-- Main Interface -->
+<h3>Main Interface</h3>
+<img src="ScreenShots/MainScreen.jpg" width="200">
+<img src="ScreenShots/VoiceInput.jpg" width="200">
 
-### Chatbot
-![Chatbot 1](ScreenShots/Chatbot1.jpg)
-![Chatbot 2](ScreenShots/Chatbot2.jpg)
-![Chatbot 3](ScreenShots/Chatbot3.jpg)
-![Chatbot 4](ScreenShots/Chatbot4.jpg)
-![Chatbot 5](ScreenShots/Chatbot5.jpg)
-![Chatbot 6](ScreenShots/Chatbot6.jpg)
+<!-- Chatbot -->
+<h3>Chatbot</h3>
+<img src="ScreenShots/Chatbot1.jpg" width="200">
+<img src="ScreenShots/Chatbot2.jpg" width="200">
+<img src="ScreenShots/Chatbot3.jpg" width="200"><br>
+<img src="ScreenShots/Chatbot4.jpg" width="200">
+<img src="ScreenShots/Chatbot5.jpg" width="200">
+<img src="ScreenShots/Chatbot6.jpg" width="200"><br>
 
-### Object Detection & QR
-![Object Detection](ScreenShots/ObjectDetection.jpg)
-![QR Code Scanner](ScreenShots/QRCodeScanner.jpg)
+<!-- Object Detection & QR -->
+<h3>Object Detection & QR</h3>
+<img src="ScreenShots/ObjectDetection.jpg" width="200">
+<img src="ScreenShots/QRCodeScanner.jpg" width="200"><br>
 
-### Text Recognition & Translation
-![Text Recognition 1](ScreenShots/TextRecognition1.jpg)
-![Text Recognition 2](ScreenShots/TextRecognition2.jpg)
-![Translation 1](ScreenShots/TranslationScreen1.jpg)
-![Translation 2](ScreenShots/TranslationScreen2.jpg)
+<!-- Text Recognition & Translation -->
+<h3>Text Recognition & Translation</h3>
+<img src="ScreenShots/TextRecognition1.jpg" width="200">
+<img src="ScreenShots/Text Recognition2.jpg" width="200">
+<img src="ScreenShots/TranslationScreen1.jpg" width="200"><br>
+<img src="ScreenShots/TranslationScreen2.jpg" width="200">
+
 
 
 
