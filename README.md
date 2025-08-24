@@ -60,7 +60,7 @@ Google Sign-In
 
 ### Text Recognition & Translation
 ![Text Recognition 1](ScreenShots/TextRecognition1.jpg)
-![Text Recognition 2](ScreenShots/Text Recognition2.jpg)
+![Text Recognition 2](ScreenShots/TextRecognition2.jpg)
 ![Translation 1](ScreenShots/TranslationScreen1.jpg)
 ![Translation 2](ScreenShots/TranslationScreen2.jpg)
 
