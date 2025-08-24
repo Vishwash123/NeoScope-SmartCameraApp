@@ -39,35 +39,54 @@ Google Sign-In
 
 ## 📸 ScreenShots
 
-<!-- Authentication -->
-<h3>Authentication</h3>
-<img src="ScreenShots/Authentication.jpg" width="200">
+### Authentication
+<table>
+  <tr>
+    <td><img src="ScreenShots/Authentication.jpg" width="200"></td>
+  </tr>
+</table>
 
-<!-- Main Interface -->
-<h3>Main Interface</h3>
-<img src="ScreenShots/MainScreen.jpg" width="200">
-<img src="ScreenShots/VoiceInput.jpg" width="200">
+### Main Interface
+<table>
+  <tr>
+    <td><img src="ScreenShots/MainScreen.jpg" width="200"></td>
+    <td><img src="ScreenShots/VoiceInput.jpg" width="200"></td>
+  </tr>
+</table>
 
-<!-- Chatbot -->
-<h3>Chatbot</h3>
-<img src="ScreenShots/Chatbot1.jpg" width="200">
-<img src="ScreenShots/Chatbot2.jpg" width="200">
-<img src="ScreenShots/Chatbot3.jpg" width="200"><br>
-<img src="ScreenShots/Chatbot4.jpg" width="200">
-<img src="ScreenShots/Chatbot5.jpg" width="200">
-<img src="ScreenShots/Chatbot6.jpg" width="200"><br>
+### Chatbot
+<table>
+  <tr>
+    <td><img src="ScreenShots/Chatbot1.jpg" width="200"></td>
+    <td><img src="ScreenShots/Chatbot2.jpg" width="200"></td>
+    <td><img src="ScreenShots/Chatbot3.jpg" width="200"></td>
+  </tr>
+  <tr>
+    <td><img src="ScreenShots/Chatbot4.jpg" width="200"></td>
+    <td><img src="ScreenShots/Chatbot5.jpg" width="200"></td>
+    <td><img src="ScreenShots/Chatbot6.jpg" width="200"></td>
+  </tr>
+</table>
 
-<!-- Object Detection & QR -->
-<h3>Object Detection & QR</h3>
-<img src="ScreenShots/ObjectDetection.jpg" width="200">
-<img src="ScreenShots/QRCodeScanner.jpg" width="200"><br>
+### Object Detection & QR
+<table>
+  <tr>
+    <td><img src="ScreenShots/ObjectDetection.jpg" width="200"></td>
+    <td><img src="ScreenShots/QRCodeScanner.jpg" width="200"></td>
+  </tr>
+</table>
 
-<!-- Text Recognition & Translation -->
-<h3>Text Recognition & Translation</h3>
-<img src="ScreenShots/TextRecognition1.jpg" width="200">
-<img src="ScreenShots/Text Recognition2.jpg" width="200">
-<img src="ScreenShots/TranslationScreen1.jpg" width="200"><br>
-<img src="ScreenShots/TranslationScreen2.jpg" width="200">
+### Text Recognition & Translation
+<table>
+  <tr>
+    <td><img src="ScreenShots/TextRecognition1.jpg" width="200"></td>
+    <td><img src="ScreenShots/Text Recognition2.jpg" width="200"></td>
+    <td><img src="ScreenShots/TranslationScreen1.jpg" width="200"></td>
+  </tr>
+  <tr>
+    <td><img src="ScreenShots/TranslationScreen2.jpg" width="200"></td>
+  </tr>
+</table>
 
 
 
