@@ -115,6 +115,6 @@ The AI services are powered by a separate **Flask backend** which handles:
 - Photo and text processing
 - Serving AI features to the Android client
 
-You can find the backend repository here: [Neoscope Backend](https://github.com/Vishwash123/neoscope-backend)
+You can find the backend repository here: [Neoscope Backend](https://github.com/Vishwash123/NeoScopeChatbotBackend.git)
 
 
